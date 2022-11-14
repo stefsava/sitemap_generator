@@ -17,6 +17,7 @@ module SitemapGenerator
     # @option :fog_path_style [String]
     # @option :fog_storage_options [Hash] Other options to pass to `Fog::Storage`
     # @option :fog_public [Boolean] Whether the file is publicly accessible
+    # @option :fog_attributes [Hash] Additional attributes to set on files
     #
     # Alternatively you can use an environment variable to configure each option (except `fog_storage_options`).
     # The environment variables have the same name but capitalized, e.g. `FOG_PATH_STYLE`.
@@ -30,6 +31,7 @@ module SitemapGenerator
       @fog_storage_options = opts[:fog_storage_options] || {}
       fog_public = opts[:fog_public].nil? ? ENV['FOG_PUBLIC'] : opts[:fog_public]
       @fog_public = SitemapGenerator::Utilities.falsy?(fog_public) ? false : true
+      @fog_attributes = opts[:fog_attributes] || {}
     end
 
     # Call with a SitemapLocation and string data
@@ -50,11 +52,11 @@ module SitemapGenerator
 
       storage   = Fog::Storage.new(@fog_storage_options.merge(credentials))
       directory = storage.directories.new(:key => @fog_directory)
-      directory.files.create(
+      directory.files.create({
         :key    => location.path_in_public,
         :body   => File.open(location.path),
         :public => @fog_public
-      )
+      }.merge(@fog_attributes))
     end
   end
 end
