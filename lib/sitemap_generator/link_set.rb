@@ -7,7 +7,7 @@ module SitemapGenerator
     @@requires_finalization_opts = [:filename, :sitemaps_path, :sitemaps_host, :namer]
     @@new_location_opts = [:filename, :sitemaps_path, :namer]
 
-    attr_reader :default_host, :sitemaps_path, :filename, :create_index
+    attr_reader :default_host, :stylesheet_path, :sitemaps_path, :filename, :create_index
     attr_accessor :include_root, :include_index, :adapter, :yield_sitemap, :max_sitemap_links
     attr_writer :verbose
 
@@ -507,6 +507,13 @@ module SitemapGenerator
         update_location_info(:host, value)
       end
 
+      # Set a path to an xslt stylesheet so that browsers that support it, almost all,
+      # can display sitemaps in HTML format.
+      def stylesheet_path=(value)
+        @stylesheet_path = value
+        update_location_info(:stylesheet_path, value)
+      end
+
       # Set the public_path.  This path gives the location of your public directory.
       # The default is the public/ directory in your Rails root.  Or if Rails is not
       # found, it defaults to public/ in the current directory (of the process).
@@ -577,6 +584,7 @@ module SitemapGenerator
       def sitemap_location
         SitemapGenerator::SitemapLocation.new(
           :host => sitemaps_host,
+          :stylesheet_path => stylesheet_path,
           :namer => namer,
           :public_path => public_path,
           :sitemaps_path => @sitemaps_path,

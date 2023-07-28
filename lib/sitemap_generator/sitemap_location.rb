@@ -51,6 +51,7 @@ module SitemapGenerator
         :public_path,
         :sitemaps_path,
         :host,
+        :stylesheet_path,
         :filename,
         :namer,
         :verbose,
@@ -145,6 +146,10 @@ module SitemapGenerator
 
     def verbose?
       self[:verbose]
+    end
+
+    def stylesheet
+      self[:stylesheet]
     end
 
     # If you set the filename, clear the namer and vice versa.
